@@ -6,12 +6,11 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
     />
-    <title>Scramjet Games</title>
+    <title>S0LACE</title>
 
     <link rel="shortcut icon" content="favicon.webp" />
     <link rel="stylesheet" href="index.css" />
     <script src="global-hub.js" defer></script>
-
 
     <style>
       :root {
@@ -101,10 +100,25 @@
         margin-bottom: 6px;
       }
 
-      .sub {
+      /* search bar above games */
+      .games-search-wrap {
+        margin: 10px 0 18px;
+      }
+
+      #game-search {
+        width: 100%;
+        max-width: 320px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.6);
+        background: rgba(15, 23, 42, 0.95);
+        color: var(--fg);
         font-size: 13px;
-        color: var(--fg-dim);
-        margin-bottom: 20px;
+        outline: none;
+      }
+
+      #game-search::placeholder {
+        color: #6b7280;
       }
 
       .game-grid {
@@ -172,6 +186,14 @@
         box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
       }
 
+      /* "no results" text */
+      #game-empty {
+        display: none;
+        margin-top: 12px;
+        font-size: 12px;
+        color: var(--fg-dim);
+      }
+
       /* optional: make it less cramped on small screens */
       @media (max-width: 900px) {
         .game-grid {
@@ -190,7 +212,7 @@
   <body>
     <header class="site-header">
       <div class="site-title">
-        Scramjet Hub <span>games</span>
+        S0LACE
       </div>
       <nav class="site-nav">
         <a href="index.html">Proxy</a>
@@ -201,17 +223,24 @@
     </header>
 
     <main>
-      <h1>Game Library</h1>
-      <p class="sub">
-        Click any game to open it in the shared player. You only ever use one
-        game player page.
-      </p>
+      <h1>Games</h1>
 
-      <div class="game-grid">
+      <!-- SEARCH -->
+      <div class="games-search-wrap">
+        <input
+          id="game-search"
+          type="text"
+          placeholder="Search games..."
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="game-grid" id="game-grid">
         <!-- Update the src paths to your real thumbnails and game files -->
         <a
           class="game-card"
           href="player.html?game=games/retrobowl/index.html"
+          data-name="retro bowl"
         >
           <div class="game-thumb">
             <img src="thumbs/retrobowl.png" alt="Retro Bowl" />
@@ -222,6 +251,7 @@
         <a
           class="game-card"
           href="player.html?game=games/burritobison/index.html"
+          data-name="burrito bison lucha libre"
         >
           <div class="game-thumb">
             <img src="thumbs/burritobison.png" alt="burrito bison" />
@@ -231,16 +261,46 @@
 
         <a
           class="game-card"
-          href="player.html?game=games/example-game-3.html"
+          href="player.html?game=games/geometrydash/index.html"
+          data-name="geometrydash"
         >
           <div class="game-thumb">
-            <img src="thumbs/example3.png" alt="Example Game 3" />
-            <div class="game-overlay">Example Game 3</div>
+            <img src="thumbs/geometrydash.png" alt="Geometry Dsah" />
+            <div class="game-overlay">Geometry Dash</div>
           </div>
         </a>
 
-        <!-- add more cards here, same structure -->
+        <!-- add more cards here, same structure
+             just remember to set data-name="whatever you want the search to match" -->
       </div>
+
+      <div id="game-empty">No games match that search.</div>
     </main>
+
+    <script>
+      const searchInput = document.getElementById("game-search");
+      const cards = Array.from(document.querySelectorAll(".game-card"));
+      const emptyMsg = document.getElementById("game-empty");
+
+      function filterGames() {
+        const q = searchInput.value.trim().toLowerCase();
+        let visibleCount = 0;
+
+        cards.forEach((card) => {
+          const name = (card.dataset.name || "").toLowerCase();
+          const match = !q || name.includes(q);
+          card.style.display = match ? "" : "none";
+          if (match) visibleCount++;
+        });
+
+        if (emptyMsg) {
+          emptyMsg.style.display = q && visibleCount === 0 ? "block" : "none";
+        }
+      }
+
+      if (searchInput) {
+        searchInput.addEventListener("input", filterGames);
+      }
+    </script>
   </body>
 </html>
