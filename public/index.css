@@ -52,7 +52,6 @@ body {
       transparent 16px
     );
 
-  /* make header + main flex so player can fill screen */
   display: flex;
   flex-direction: column;
 }
@@ -61,7 +60,7 @@ a {
   color: inherit;
 }
 
-/* ========= SHARED SHELL / LAYOUT ========= */
+/* ========= HEADER / NAV ========= */
 
 .site-header {
   position: sticky;
@@ -145,13 +144,17 @@ a {
   box-shadow: 0 0 0 1px #000, 0 0 18px rgba(0, 255, 127, 0.6);
 }
 
+/* ========= MAIN LAYOUT ========= */
+
 main {
   padding: 18px 12px 32px;
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
-  flex: 1; /* so player pages can stretch */
+  flex: 1;
 }
+
+/* ========= PAGE HEADER (for games/media/apps/settings) ========= */
 
 .page-header {
   display: flex;
@@ -187,18 +190,106 @@ h1::after {
   color: var(--accent);
 }
 
-/* ========= HOME / PROXY ========= */
+/* ========= HOME GRID LAYOUT (PIZZA STYLE) ========= */
 
-.home-title-block {
-  margin-bottom: 18px;
+.home-main {
+  flex: 1;
+  padding: 18px 12px 32px;
+  display: flex;
 }
 
-.home-proxy-panel {
-  margin-bottom: 18px;
+.home-grid {
+  display: grid;
+  grid-template-columns: 1fr minmax(260px, 420px) 1fr;
+  gap: 14px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  align-items: flex-start;
 }
 
-.home-popular-panel {
+.home-side {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.side-label {
+  font-size: 8px;
+  color: var(--fg-dim);
+}
+
+.side-games {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.side-card {
+  position: relative;
+  display: block;
+  border: 2px solid var(--border-hard);
+  background: #000;
+  box-shadow: 0 0 0 1px #000, 0 0 20px rgba(0, 0, 0, 0.9);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.side-thumb {
+  width: 100%;
+  padding-top: 100%; /* big square tile */
+  background-size: cover;
+  background-position: center;
+  background-color: #050505;
+  image-rendering: pixelated;
+}
+
+.side-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  text-align: center;
+  padding: 6px;
+  text-shadow: 0 0 6px rgba(0, 255, 127, 0.7);
+}
+
+.side-card:hover .side-overlay {
+  opacity: 1;
+}
+
+/* center block */
+
+.home-center {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.home-logo-title {
+  text-align: center;
+  padding-bottom: 6px;
+}
+
+.home-logo-mark {
+  font-size: 26px;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  color: var(--accent);
+  text-transform: uppercase;
+  text-shadow: 0 0 10px rgba(0, 255, 127, 0.8), 0 0 22px rgba(0, 255, 127, 0.5);
+}
+
+.home-logo-sub {
   margin-top: 4px;
+  font-size: 8px;
+  color: var(--fg-dim);
 }
 
 .home-panel {
@@ -209,13 +300,11 @@ h1::after {
   min-height: 150px;
 }
 
-/* random message / MOTD */
-
-.motd-label {
-  font-size: 8px;
-  color: var(--fg-dim);
-  margin-bottom: 6px;
+.home-proxy-panel {
+  margin: 0;
 }
+
+/* random MOTD */
 
 #motd {
   font-size: 9px;
@@ -231,13 +320,30 @@ h1::after {
   box-shadow: 0 0 12px rgba(0, 255, 127, 0.4);
 }
 
-/* proxy search block */
-
 .proxy-label {
   font-size: 8px;
   color: var(--fg-dim);
   margin-bottom: 6px;
 }
+
+/* mobile: hide side columns */
+
+@media (max-width: 900px) {
+  .home-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-side {
+    display: none;
+  }
+
+  .home-center {
+    max-width: 420px;
+    margin: 0 auto;
+  }
+}
+
+/* ========= PROXY FORM ========= */
 
 #sj-form {
   display: flex;
@@ -295,7 +401,8 @@ h1::after {
   margin-top: 2px;
 }
 
-/* iframe for proxied page (Scramjet uses this) */
+/* iframe used by Scramjet when page is proxied */
+
 #sj-frame {
   border: none;
   position: absolute;
@@ -306,78 +413,7 @@ h1::after {
   background-color: #000;
 }
 
-/* ========= POPULAR GAMES STRIP ========= */
-
-.popular-wrap {
-  margin-top: 10px;
-  overflow: hidden;
-  border: 2px solid var(--border-hard);
-  background: radial-gradient(circle at center, #101010 0, #000000 70%);
-  box-shadow: 0 0 0 1px #000, 0 0 22px rgba(0, 0, 0, 0.9);
-  padding: 6px 0;
-}
-
-.popular-track {
-  display: inline-flex;
-  align-items: stretch;
-  gap: 8px;
-  white-space: nowrap;
-  animation: s0lace-popular-scroll 38s linear infinite;
-  padding-left: 8px;
-}
-
-.popular-wrap:hover .popular-track {
-  animation-play-state: paused;
-}
-
-.popular-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 8px;
-  border-radius: 0;
-  border: 2px solid var(--border-hard);
-  background: #000;
-  text-decoration: none;
-  color: var(--fg);
-  font-size: 8px;
-  cursor: pointer;
-  box-shadow: 0 0 0 1px #000;
-}
-
-.popular-pill:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  box-shadow: 0 0 16px rgba(0, 255, 127, 0.55);
-}
-
-.pill-thumb {
-  width: 20px;
-  height: 20px;
-  border-radius: 0;
-  border: 1px solid #333;
-  background-size: cover;
-  background-position: center;
-  background-color: #050505;
-  image-rendering: pixelated;
-  flex-shrink: 0;
-}
-
-.pill-name {
-  white-space: nowrap;
-}
-
-/* marquee-style scroll */
-@keyframes s0lace-popular-scroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-/* ========= DUNGEON GRIDS (games / apps / media) ========= */
+/* ========= SEARCH + GRIDS (GAMES / APPS / MEDIA) ========= */
 
 .games-search-wrap {
   margin: 10px 0 18px;
@@ -544,7 +580,7 @@ h1::after {
   box-shadow: 0 0 0 1px #000, 0 0 20px rgba(0, 255, 127, 0.45);
 }
 
-/* "no results" text */
+/* "no results" */
 
 #game-empty,
 #app-empty,
@@ -559,7 +595,7 @@ h1::after {
   max-width: 260px;
 }
 
-/* ========= SHARED PLAYER LAYOUT (games + media) ========= */
+/* ========= PLAYER LAYOUT (GAMES + MEDIA) ========= */
 
 main.player-main {
   flex: 1;
@@ -643,6 +679,117 @@ main.player-main {
   color: var(--fg-dim);
   text-align: center;
   padding: 20px;
+}
+
+/* ========= SCRAMJET LEGACY STUFF (LOGO / FOOTER / CREDIT) ========= */
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+}
+
+.header-center {
+  align-items: center;
+  flex-direction: column;
+  margin-top: 10%;
+}
+
+.left-margin {
+  margin: 0px 16px;
+}
+
+.logo {
+  height: 25vh;
+}
+
+.logo-wrapper .text {
+  font-size: 75px;
+  color: #fff;
+}
+
+.logo-wrapper h1 {
+  color: white;
+}
+
+/* footer styles for credits.html etc. */
+footer {
+  margin: 0 16px;
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  line-height: 30px;
+  margin-bottom: 20px;
+}
+
+footer > div {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+footer a,
+footer span {
+  margin: 0 15px;
+  text-decoration: none;
+  color: #fff;
+  font-size: 15px;
+}
+
+footer a {
+  cursor: pointer;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+.desc p {
+  width: 560px;
+  color: rgba(253, 253, 253, 0.514);
+}
+
+/* credit block used in Scramjet demo license page */
+.credit {
+  border-radius: 10px;
+  padding: 10px;
+  display: block;
+  border: #fff 1px solid;
+  color: #fff;
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+.credit label {
+  margin-left: auto;
+  margin-right: 15px;
+}
+
+.credit a,
+.credit label {
+  color: white;
+  text-decoration: underline;
+  text-align: right;
+}
+
+.credit pre {
+  display: none;
+  width: 100%;
+}
+
+.credit label::after {
+  content: "show license";
+  cursor: pointer;
+}
+
+.credit input:checked + label::after {
+  content: "hide license";
+}
+
+.credit input:checked ~ pre {
+  display: block;
 }
 
 /* ========= RESPONSIVE ========= */
