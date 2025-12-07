@@ -1,23 +1,18 @@
-importScripts('/scram/scramjet.all.js');
+importScripts("/scramjet/scramjet.all.js");
 
 const { ScramjetServiceWorker } = $scramjetLoadWorker();
 const scramjet = new ScramjetServiceWorker();
 
-async function handleRequest(event) {
-  await scramjet.loadConfig();
-  if (scramjet.route(event)) {
-    return scramjet.fetch(event);
-  }
-  return fetch(event.request);
-}
+self.addEventListener("fetch", (event) => {
+  event.respondWith((async () => {
+    await scramjet.loadConfig();
 
-self.addEventListener('fetch', (event) => {
-  const url = new URL(event.request.url);
+    // Scramjet handles ONLY its traffic
+    if (scramjet.route(event)) {
+      return scramjet.fetch(event);
+    }
 
-  // let TMDB images go straight to the network (no proxy)
-  if (url.hostname === 'image.tmdb.org') {
-    return; // do NOT call respondWith -> browser handles normally
-  }
-
-  event.respondWith(handleRequest(event));
+    // Everything else goes direct
+    return fetch(event.request);
+  })());
 });
