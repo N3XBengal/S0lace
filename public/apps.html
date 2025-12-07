@@ -255,11 +255,11 @@
         appCards = [...sticky, ...normal];
       }
 
-      // ===== OPEN VIA MEDIAPLAYER (proxied) =====
-      function goToAppPlayer(title, src) {
+      // ===== OPEN VIA APPSLAUNCHER (proxied) =====
+      function goToAppLauncher(title, src) {
         if (!src) return;
         const url =
-          "mediaplayer.html?src=" +
+          "appslauncher.html?src=" +
           encodeURIComponent(src) +
           "&title=" +
           encodeURIComponent(title || "Untitled");
@@ -270,7 +270,7 @@
         appCards.forEach((card) => {
           const stickTop = card.dataset.stick === "top";
           if (stickTop) {
-            // "Suggest app" should just go to Google Form in new tab
+            // "Suggest app" just opens Google Form
             return;
           }
           card.addEventListener("click", (e) => {
@@ -278,7 +278,7 @@
             const title = card.dataset.title || "Untitled";
             const src = card.dataset.src || "";
             if (!src) return;
-            goToAppPlayer(title, src);
+            goToAppLauncher(title, src);
           });
         });
       }
