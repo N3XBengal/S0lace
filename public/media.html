@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+      content="width=device-width, initial-scale=1.0, shrink-to-fit-no"
     />
     <title>S0LACE • Media</title>
 
@@ -57,7 +57,7 @@
 
       <div class="media-grid" id="media-grid">
         <!-- STATIC CARDS (kept no matter what TMDB does) -->
-        <!-- Add any manual .media-card.static-card here if you want -->
+        <!-- If you want manual entries, give them class="media-card static-card" -->
       </div>
 
       <div id="media-empty" style="display:none;">
@@ -70,9 +70,8 @@
       // TMDB v3 API key (NOT the v4 bearer token)
       const TMDB_KEY = "2d1351cf74f73892042699d0431b799a";
 
-      // TMDB image host + size
-      const TMDB_IMG_ORIGIN = "https://image.tmdb.org/t/p/";
-      const TMDB_IMG_SIZE = "w600_and_h900_face"; // change if you want smaller
+      // TMDB image base (this is the correct format)
+      const TMDB_IMG_BASE = "https://image.tmdb.org/t/p/w342";
 
       const mediaSearch = document.getElementById("media-search");
       const mediaGrid = document.getElementById("media-grid");
@@ -117,7 +116,6 @@
 
       // ========== WIRE STATIC CARDS ==========
       function wireStaticCards() {
-        // Any manually-added static cards should use class="media-card static-card"
         const staticCards = document.querySelectorAll(".media-card.static-card");
         staticCards.forEach((card) => wireCardClick(card));
       }
@@ -139,10 +137,8 @@
 
         const img = document.createElement("img");
         if (posterPath) {
-          // Build upstream TMDB URL, then run it through Scramjet
-          const upstream =
-            TMDB_IMG_ORIGIN + TMDB_IMG_SIZE + posterPath; // e.g. https://image.tmdb.org/t/p/w600_and_h900_face/xyz.jpg
-          img.src = "/scramjet/" + upstream;
+          // DIRECT TMDB URL (no proxy)
+          img.src = TMDB_IMG_BASE + posterPath;
         } else {
           img.src = "thumbs/placeholder-poster.png"; // fallback
         }
@@ -210,7 +206,6 @@
             fragment.appendChild(createCardFromTMDB(movie));
           });
 
-          // prepend TMDB cards before any static ones
           if (mediaGrid.firstChild) {
             mediaGrid.insertBefore(fragment, mediaGrid.firstChild);
           } else {
@@ -232,7 +227,6 @@
       async function searchTMDB(query) {
         const q = query.trim();
         if (!q) {
-          // empty search -> go back to trending view
           await loadTrending();
           return;
         }
