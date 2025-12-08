@@ -347,10 +347,10 @@
           return;
         }
 
-        // open in new tab (direct CinemaOS)
+        // open in new tab (direct VidFast)
         if (openNewTabBtn) {
           openNewTabBtn.addEventListener("click", () => {
-            const direct = `https://vidfast.pro/tv/${ID}/${season}/${episode}`;
+            const direct = `https://vidfast.pro/tv/${tmdbId}/${currentSeason}/${currentEpisode}`;
             window.open(direct, "_blank");
           });
         }
@@ -372,7 +372,7 @@
         }
 
         function updateFrame() {
-          const src = `/scramjet/https://vidfast.pro/tv/${ID}/${season}/${episode}`;
+          const src = `/scramjet/https://vidfast.pro/tv/${tmdbId}/${currentSeason}/${currentEpisode}`;
           if (frame) frame.src = src;
           if (titleEl) {
             titleEl.textContent = `${titleParam}  S${currentSeason}E${currentEpisode}`;
