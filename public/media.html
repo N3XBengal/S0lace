@@ -11,6 +11,21 @@
     <link rel="shortcut icon" content="favicon.ico" />
     <link rel="stylesheet" href="index.css" />
     <script src="global-hub.js" defer></script>
+
+    <!-- added subheader styling -->
+    <style>
+      .media-sub {
+        margin-top: -6px;
+        margin-bottom: 18px;
+        font-size: 11px;
+        color: var(--fg-dim);
+        text-align: center;
+        font-family: Spectral, serif;
+        opacity: 0.85;
+        letter-spacing: 0.3px;
+        pointer-events: none;
+      }
+    </style>
   </head>
 
   <body>
@@ -27,6 +42,9 @@
     <main>
       <div class="page-header">
         <h1>Media</h1>
+
+        <!-- merged: subheader under MEDIA -->
+        <div class="media-sub">IF YOU GET SCRAMJET | ERROR, GO TO HOME PAGE AND USE PR0XY THEN TRY AGAIN IN A FEW MINUTES</div>
       </div>
 
       <!-- SEARCH BAR (HORIZONTAL) -->
@@ -184,7 +202,6 @@
 
         a.addEventListener("click", (e) => {
           e.preventDefault();
-          // default S1E1
           goToTvPlayer(id, title, 1, 1);
         });
 
@@ -350,7 +367,6 @@
           mediaSearch.addEventListener("keyup", (e) => {
             if (e.key === "Enter") {
               const q = mediaSearch.value || "";
-              // one search bar controls BOTH sections
               searchMovies(q);
               searchTv(q);
             }
