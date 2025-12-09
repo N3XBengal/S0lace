@@ -35,10 +35,10 @@
         <div style="margin-top:10px;font-size:8px;">
           <div style="margin-bottom:6px;">PRESETS ></div>
           <div style="display:flex;flex-wrap:wrap;gap:6px;">
-            <button type="button" class="proxy-btn" data-cloak-preset="drive">Google Drive</button>
-            <button type="button" class="proxy-btn" data-cloak-preset="schoology">Schoology</button>
-            <button type="button" class="proxy-btn" data-cloak-preset="docs">Google Docs</button>
-            <button type="button" class="proxy-btn" data-cloak-preset="google">Google</button>
+            <button class="proxy-btn" data-cloak-preset="drive">Google Drive</button>
+            <button class="proxy-btn" data-cloak-preset="schoology">Schoology</button>
+            <button class="proxy-btn" data-cloak-preset="docs">Google Docs</button>
+            <button class="proxy-btn" data-cloak-preset="google">Google</button>
           </div>
         </div>
 
@@ -49,17 +49,17 @@
             <label>
               Title<br />
               <input id="cloak-title" type="text" placeholder="e.g. My Drive - Google Drive"
-                style="width:100%;margin-top:3px;padding:6px 8px;border-radius:0;border:2px solid #262626;background:#000;color:#f5f5f5;font-size:8px;font-family:'Press Start 2P',system-ui,sans-serif;">
+                class="input-dark" />
             </label>
             <label>
               Favicon URL<br />
               <input id="cloak-icon" type="text" placeholder="https://.../favicon.ico"
-                style="width:100%;margin-top:3px;padding:6px 8px;border-radius:0;border:2px solid #262626;background:#000;color:#f5f5f5;font-size:8px;font-family:'Press Start 2P',system-ui,sans-serif;">
+                class="input-dark" />
             </label>
 
-            <div style="display:flex;gap:8px;margin-top:4px;">
-              <button type="button" class="proxy-btn" id="apply-custom-cloak">Apply</button>
-              <button type="button" class="proxy-btn" id="reset-cloak">Reset</button>
+            <div style="display:flex;gap:8px;">
+              <button class="proxy-btn" id="apply-custom-cloak">Apply</button>
+              <button class="proxy-btn" id="reset-cloak">Reset</button>
             </div>
 
             <div id="cloak-status" style="font-size:8px;color:#7f7f7f;"></div>
@@ -67,7 +67,7 @@
         </div>
       </section>
 
-      <!-- ================= ACCENT ================= -->
+      <!-- ================= ACCENT COLOR ================= -->
       <section class="home-panel" style="margin-bottom:16px;">
         <div class="motd-label">ACCENT COLOR</div>
         <div style="margin-top:10px;font-size:8px;">
@@ -78,23 +78,26 @@
         </div>
       </section>
 
-      <!-- ================= THEME ================= -->
+      <!-- ================= THEME COLOR ================= -->
       <section class="home-panel" style="margin-bottom:16px;">
         <div class="motd-label">THEME</div>
+
+        <!-- FIX: use correct theme values -->
         <div style="margin-top:10px;font-size:8px;">
           <label><input type="radio" name="theme" value="dark" class="theme-radio" checked> dark</label>
-          <label><input type="radio" name="theme" value="baby" class="theme-radio"> blue</label>
-          <label><input type="radio" name="theme" value="xmas" class="theme-radio"> green</label>
+          <label><input type="radio" name="theme" value="light" class="theme-radio"> light</label>
+          <label><input type="radio" name="theme" value="baby" class="theme-radio"> baby-blue</label>
+          <label><input type="radio" name="theme" value="xmas" class="theme-radio"> christmas</label>
         </div>
       </section>
 
       <!-- ================= BACKGROUND ================= -->
       <section class="home-panel" style="margin-bottom:16px;">
         <div class="motd-label">BACKGROUND</div>
+
         <div style="margin-top:10px;font-size:8px;">
           <div style="margin-bottom:6px;">MODE ></div>
-          <select id="bg-mode"
-            style="font-family:'Press Start 2P',system-ui,sans-serif;font-size:8px;padding:6px 8px;border-radius:0;border:2px solid #262626;background:#000;color:#f5f5f5;width:100%;">
+          <select id="bg-mode" class="input-dark">
             <option value="default">DEFAULT (CRT GRID)</option>
             <option value="gif-stars">STARRY GIF</option>
             <option value="custom">CUSTOM IMAGE URL</option>
@@ -104,39 +107,10 @@
             <label>
               Image URL<br />
               <input id="bg-url" type="text" placeholder="https://example.com/your-bg.gif"
-                style="width:100%;margin-top:3px;padding:6px 8px;border-radius:0;border:2px solid #262626;background:#000;color:#f5f5f5;font-size:8px;font-family:'Press Start 2P',system-ui,sans-serif;">
+                class="input-dark" />
             </label>
           </div>
         </div>
-      </section>
-
-      <!-- ================= ABOUT:BLANK LAUNCHER ================= -->
-      <section class="home-panel" style="margin-bottom:16px;">
-        <div class="motd-label">ABOUT:BLANK MODE</div>
-        <label style="font-size:8px;display:flex;align-items:center;gap:6px;">
-          <input type="checkbox" id="enable-aboutblank"> Launch S0LACE inside about:blank automatically
-        </label>
-      </section>
-
-      <!-- ================= ANTI-CLOSE ================= -->
-      <section class="home-panel" style="margin-bottom:16px;">
-        <div class="motd-label">ANTI-CLOSE PROTECTION</div>
-        <label style="font-size:8px;display:flex;align-items:center;gap:6px;">
-          <input type="checkbox" id="enable-anticlose"> Warn me before closing this tab
-        </label>
-      </section>
-
-      <!-- ================= PANIC BUTTON ================= -->
-      <section class="home-panel" style="margin-bottom:16px;">
-        <div class="motd-label">PANIC BUTTON</div>
-
-        <label style="font-size:8px;">Redirect URL</label>
-        <input id="panic-url" type="text" placeholder="https://classroom.google.com"
-          style="width:100%;margin-top:3px;padding:6px 8px;border:2px solid #262626;background:#000;color:#f5f5f5;font-size:8px;font-family:'Press Start 2P',system-ui,sans-serif;">
-
-        <label style="font-size:8px;margin-top:8px;">Keybind (single key)</label>
-        <input id="panic-key" type="text" maxlength="1" placeholder="e.g. P"
-          style="width:80px;margin-top:3px;padding:6px 8px;border:2px solid #262626;background:#000;color:#f5f5f5;font-size:8px;font-family:'Press Start 2P',system-ui,sans-serif;">
       </section>
 
       <!-- ================= STORAGE ================= -->
@@ -145,17 +119,16 @@
         <div style="margin-top:8px;font-size:8px;color:#7f7f7f;">
           Settings are stored locally on *this device*.
         </div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
-          <button type="button" class="proxy-btn" id="btn-reset-settings">Reset S0LACE settings</button>
-          <button type="button" class="proxy-btn" id="btn-clear-media">Clear media cache</button>
+
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <button class="proxy-btn" id="btn-reset-settings">Reset S0LACE settings</button>
+          <button class="proxy-btn" id="btn-clear-media">Clear media cache</button>
         </div>
       </section>
     </main>
 
     <script>
-      /* ------------------------------
-           MERGED LOGIC BELOW
-      -------------------------------*/
+      /* CLEANED VERSION — NO PANIC BUTTON, NO ABOUT:BLANK */
 
       const presetButtons = document.querySelectorAll("[data-cloak-preset]");
       const titleInput = document.getElementById("cloak-title");
@@ -163,31 +136,21 @@
       const applyCustomBtn = document.getElementById("apply-custom-cloak");
       const resetBtn = document.getElementById("reset-cloak");
       const statusEl = document.getElementById("cloak-status");
+
       const accentRadios = document.querySelectorAll(".accent-radio");
       const themeRadios = document.querySelectorAll(".theme-radio");
+
       const bgModeSelect = document.getElementById("bg-mode");
       const bgUrlRow = document.getElementById("bg-url-row");
       const bgUrlInput = document.getElementById("bg-url");
+
       const btnResetSettings = document.getElementById("btn-reset-settings");
       const btnClearMedia = document.getElementById("btn-clear-media");
 
-      const antiClose = document.getElementById("enable-anticlose");
-      const aboutBlank = document.getElementById("enable-aboutblank");
-      const panicUrl = document.getElementById("panic-url");
-      const panicKey = document.getElementById("panic-key");
-
       const CLOAK_KEY = "s0laceTabCloak";
-      const THEME_KEY = "s0laceTheme";
-      const BG_MODE_KEY = "s0laceBgMode";
-      const BG_URL_KEY = "s0laceBgUrl";
       const MEDIA_CACHE_KEY = "s0laceMediaCache";
 
-      const ABOUTBLANK_KEY = "s0laceAboutBlank";
-      const ANTICLOSE_KEY = "s0laceAntiClose";
-      const PANIC_URL_KEY = "s0lacePanicUrl";
-      const PANIC_KEY_KEY = "s0lacePanicKey";
-
-      /* ------------------ PRESETS ------------------ */
+      /* ================= APPLY PRESETS ================= */
       const PRESETS = {
         drive: {
           title: "My Drive - Google Drive",
@@ -207,70 +170,21 @@
         }
       };
 
-      /* ------------------ AUTO LOADING SAVED SETTINGS ------------------ */
-      window.addEventListener("s0lace:settingsLoaded", evt => {
-        const savedAbout = localStorage.getItem(ABOUTBLANK_KEY) === "true";
-        const savedAnti = localStorage.getItem(ANTICLOSE_KEY) === "true";
-        const savedPanicUrl = localStorage.getItem(PANIC_URL_KEY) || "";
-        const savedPanicKey = localStorage.getItem(PANIC_KEY_KEY) || "";
-
-        aboutBlank.checked = savedAbout;
-        antiClose.checked = savedAnti;
-        panicUrl.value = savedPanicUrl;
-        panicKey.value = savedPanicKey;
-      });
-
-      /* ------------------ ABOUT:BLANK ------------------ */
-      aboutBlank.addEventListener("change", () => {
-        localStorage.setItem(ABOUTBLANK_KEY, aboutBlank.checked);
-      });
-
-      /* ------------------ ANTI CLOSE ------------------ */
-      antiClose.addEventListener("change", () => {
-        localStorage.setItem(ANTICLOSE_KEY, antiClose.checked);
-      });
-
-      window.addEventListener("beforeunload", (e) => {
-        if (localStorage.getItem(ANTICLOSE_KEY) === "true") {
-          e.preventDefault();
-          e.returnValue = "";
-        }
-      });
-
-      /* ------------------ PANIC BUTTON ------------------ */
-      panicUrl.addEventListener("input", () => {
-        localStorage.setItem(PANIC_URL_KEY, panicUrl.value.trim());
-      });
-
-      panicKey.addEventListener("input", () => {
-        const val = panicKey.value.trim().toUpperCase();
-        panicKey.value = val;
-        localStorage.setItem(PANIC_KEY_KEY, val);
-      });
-
-      document.addEventListener("keydown", (e) => {
-        const key = localStorage.getItem(PANIC_KEY_KEY) || "";
-        const url = localStorage.getItem(PANIC_URL_KEY) || "";
-        if (key && url && e.key.toUpperCase() === key) {
-          window.location.href = url;
-        }
-      });
-
-      /* ------------------ EVERYTHING ELSE (CLOAK, THEME, ACCENT, BG, RESET) STAYS SAME ------------------ */
-
       presetButtons.forEach(btn => {
         btn.addEventListener("click", () => {
-          const k = btn.getAttribute("data-cloak-preset");
-          const p = PRESETS[k];
+          const key = btn.dataset.cloakPreset;
+          const p = PRESETS[key];
           if (!p || !window.S0LACE) return;
 
           window.S0LACE.applyTabCloak({ enabled:true, title:p.title, iconHref:p.iconHref }, true);
+
           titleInput.value = p.title;
           iconInput.value = p.iconHref;
           statusEl.textContent = "Preset applied.";
         });
       });
 
+      /* ================= CUSTOM TAB CLOAK ================= */
       applyCustomBtn.addEventListener("click", () => {
         if (!window.S0LACE) return;
         const title = titleInput.value.trim();
@@ -291,35 +205,47 @@
         statusEl.textContent = "Cloak reset.";
       });
 
+      /* ================= ACCENT ================= */
       accentRadios.forEach(r =>
-        r.addEventListener("change", () => r.checked && window.S0LACE.applyAccent(r.value, true))
+        r.addEventListener("change", () => {
+          if (r.checked) window.S0LACE.applyAccent(r.value, true);
+        })
       );
 
+      /* ================= THEME (FIXED) ================= */
       themeRadios.forEach(r =>
-        r.addEventListener("change", () => r.checked && window.S0LACE.applyTheme(r.value, true))
+        r.addEventListener("change", () => {
+          if (r.checked) window.S0LACE.applyTheme(r.value, true);
+        })
       );
 
+      /* ================= BACKGROUND ================= */
       bgModeSelect.addEventListener("change", () => {
         const mode = bgModeSelect.value;
-        if (mode === "custom") bgUrlRow.style.display = "flex";
-        else bgUrlRow.style.display = "none";
-
+        bgUrlRow.style.display = mode === "custom" ? "flex" : "none";
         const url = mode === "custom" ? bgUrlInput.value.trim() : "";
         window.S0LACE.applyBackground(mode, url, true);
       });
 
       bgUrlInput.addEventListener("blur", () => {
-        if (bgModeSelect.value !== "custom") return;
-        window.S0LACE.applyBackground("custom", bgUrlInput.value.trim(), true);
+        if (bgModeSelect.value === "custom") {
+          window.S0LACE.applyBackground("custom", bgUrlInput.value.trim(), true);
+        }
       });
 
+      /* ================= STORAGE ================= */
       btnResetSettings.addEventListener("click", () => {
-        if (!confirm("Reset ALL settings on this device?")) return;
+        if (!confirm("Reset ALL S0LACE settings?")) return;
 
         [
-          CLOAK_KEY, THEME_KEY, BG_MODE_KEY, BG_URL_KEY, MEDIA_CACHE_KEY,
-          "s0laceAccent", "solace-tab-title", "solace-tab-favicon",
-          ABOUTBLANK_KEY, ANTICLOSE_KEY, PANIC_URL_KEY, PANIC_KEY_KEY
+          CLOAK_KEY,
+          "s0laceAccent",
+          "s0laceTheme",
+          "s0laceBgMode",
+          "s0laceBgUrl",
+          "solace-tab-title",
+          "solace-tab-favicon",
+          MEDIA_CACHE_KEY
         ].forEach(k => localStorage.removeItem(k));
 
         location.reload();
@@ -329,7 +255,6 @@
         localStorage.removeItem(MEDIA_CACHE_KEY);
         alert("Media cache cleared.");
       });
-
     </script>
   </body>
 </html>
