@@ -1,19 +1,12 @@
 // global-hub.js
-// S0LACE central settings manager — accents, themes, backgrounds,
-// tab cloak, about:blank launcher, anti-close, panic button, xmas decorations.
+// Handles accent, theme, background, tab cloaking — without breaking layout.
 
 (function () {
   const ACCENT_KEY = "s0laceAccent";
   const CLOAK_KEY = "s0laceTabCloak";
-
   const THEME_KEY = "s0laceTheme";
   const BG_MODE_KEY = "s0laceBgMode";
   const BG_URL_KEY = "s0laceBgUrl";
-  const MEDIA_CACHE_KEY = "s0laceMediaCache";
-
-  const ABOUTBLANK_KEY = "s0laceAboutBlank";
-  const ANTICLOSE_KEY = "s0laceAntiClose";
-  const PANIC_KEY = "s0lacePanicConfig";
 
   const STAR_GIF = "background.gif";
 
@@ -21,109 +14,92 @@
     green: { accent: "#00ff7f", soft: "rgba(0,255,127,0.12)" },
     violet: { accent: "#a855f7", soft: "rgba(168,85,247,0.12)" },
     amber: { accent: "#fbbf24", soft: "rgba(251,191,36,0.12)" },
-    white: { accent: "#ffffff", soft: "rgba(255,255,255,0.18)" },
+    white: { accent: "#ffffff", soft: "rgba(255,255,255,0.18)" }
   };
 
-  // ---------- UTIL ----------
-  function setCssVar(name, value) {
-    document.documentElement.style.setProperty(name, value);
+  function setVar(n, v) {
+    document.documentElement.style.setProperty(n, v);
   }
 
-  // ---------- ACCENT ----------
-  function applyAccent(accentKey, save = true) {
-    const preset = ACCENTS[accentKey] || ACCENTS.green;
-    setCssVar("--accent", preset.accent);
-    setCssVar("--accent-soft", preset.soft);
-
-    if (save) localStorage.setItem(ACCENT_KEY, accentKey);
+  // ACCENT ======================================================
+  function applyAccent(key, save = true) {
+    const a = ACCENTS[key] || ACCENTS.green;
+    setVar("--accent", a.accent);
+    setVar("--accent-soft", a.soft);
+    if (save) localStorage.setItem(ACCENT_KEY, key);
   }
 
   function loadAccent() {
-    const stored = localStorage.getItem(ACCENT_KEY);
-    const key = stored && ACCENTS[stored] ? stored : "green";
+    const key = localStorage.getItem(ACCENT_KEY) || "green";
     applyAccent(key, false);
     return key;
   }
 
-  // ---------- TAB CLOAK ----------
-  function getOrCreateFaviconLink() {
-    let link =
+  // TAB CLOAK ===================================================
+  function faviconEl() {
+    return (
+      document.querySelector('link[rel="icon"]') ||
       document.querySelector('link[rel="shortcut icon"]') ||
-      document.querySelector('link[rel="icon"]');
-    if (!link) {
-      link = document.createElement("link");
-      link.rel = "shortcut icon";
-      document.head.appendChild(link);
-    }
-    return link;
+      (() => {
+        const l = document.createElement("link");
+        l.rel = "icon";
+        document.head.appendChild(l);
+        return l;
+      })()
+    );
   }
 
   function applyTabCloak(cfg, save = true) {
-    if (!cfg || !cfg.enabled) return;
-
+    if (!cfg?.enabled) return;
     document.title = cfg.title || document.title;
-
-    if (cfg.iconHref) {
-      const link = getOrCreateFaviconLink();
-      link.href = cfg.iconHref;
-    }
-
+    if (cfg.iconHref) faviconEl().href = cfg.iconHref;
     if (save) localStorage.setItem(CLOAK_KEY, JSON.stringify(cfg));
   }
 
   function clearTabCloak(save = true) {
-    const original = document.documentElement.getAttribute("data-original-title");
-    if (original) document.title = original;
-
+    const og = document.documentElement.dataset.originalTitle;
+    if (og) document.title = og;
     if (save) localStorage.removeItem(CLOAK_KEY);
   }
 
   function loadTabCloak() {
     const raw = localStorage.getItem(CLOAK_KEY);
     if (!raw) return;
-    try {
-      const cfg = JSON.parse(raw);
-      if (cfg.enabled) applyTabCloak(cfg, false);
-    } catch (_) {}
+    const cfg = JSON.parse(raw);
+    if (cfg.enabled) applyTabCloak(cfg, false);
   }
 
-  // ---------- THEME ----------
+  // THEME =======================================================
   function applyTheme(theme, save = true) {
     document.documentElement.setAttribute("data-theme", theme);
     if (save) localStorage.setItem(THEME_KEY, theme);
   }
 
   function loadTheme() {
-    let t = localStorage.getItem(THEME_KEY);
-    if (!t) t = "dark";
-
-    // AUTO-XMAS (Dec 1–31)
-    const now = new Date();
-    const isDecember = now.getMonth() === 11;
-    if (isDecember && t !== "xmas") {
-      t = "xmas";
-      localStorage.setItem(THEME_KEY, "xmas");
-    }
-
+    const t = localStorage.getItem(THEME_KEY) || "dark";
     applyTheme(t, false);
     return t;
   }
 
-  // ---------- BACKGROUND ----------
+  // BACKGROUND ===================================================
   function applyBackground(mode, url, save = true) {
-    const body = document.body;
-    body.style.backgroundImage = "";
-    body.style.backgroundSize = "";
-    body.style.backgroundAttachment = "";
+    const b = document.body;
+
+    // Reset nothing except background-image — we keep CRT grid intact
+    b.style.backgroundImage = "";
+    b.style.backgroundSize = "";
+    b.style.backgroundAttachment = "";
 
     if (mode === "gif-stars") {
-      body.style.backgroundImage = `url("${STAR_GIF}")`;
-      body.style.backgroundSize = "cover";
-      body.style.backgroundAttachment = "fixed";
-    } else if (mode === "custom" && url) {
-      body.style.backgroundImage = `url("${url}")`;
-      body.style.backgroundSize = "cover";
-      body.style.backgroundAttachment = "fixed";
+      b.style.backgroundImage = `url("${STAR_GIF}")`;
+      b.style.backgroundSize = "cover";
+      b.style.backgroundAttachment = "fixed";
+    }
+
+    if (mode === "custom" && url) {
+      b.style.backgroundImage = `url("${url}")`;
+      b.style.backgroundSize = "cover";
+      b.style.backgroundAttachment = "fixed";
     }
 
     if (save) {
@@ -140,90 +116,30 @@
     return { mode, url };
   }
 
-  // ---------- PANIC BUTTON ----------
-  function applyPanicConfig(cfg, save = true) {
-    if (save) localStorage.setItem(PANIC_KEY, JSON.stringify(cfg));
-  }
-
-  function loadPanicConfig() {
-    const raw = localStorage.getItem(PANIC_KEY);
-    if (!raw) return null;
-
-    try {
-      return JSON.parse(raw);
-    } catch (_) {
-      return null;
-    }
-  }
-
-  // ---------- ABOUT:BLANK LAUNCH ----------
-  function launchIntoAboutBlankIfEnabled() {
-    const enabled = localStorage.getItem(ABOUTBLANK_KEY) === "1";
-    if (!enabled) return;
-
-    // Prevent infinite loops
-    if (window.top !== window.self) return;
-
-    const url = window.location.href;
-    const win = window.open("about:blank", "_blank");
-
-    if (!win) return; // popup blocked
-
-    win.document.write(`<iframe src="${url}" style="border:0;position:fixed;inset:0;width:100vw;height:100vh;"></iframe>`);
-    win.document.close();
-    window.location.replace("https://google.com"); // hide opener
-  }
-
-  // ---------- ANTI-CLOSE ----------
-  function installAntiCloseIfEnabled() {
-    const enabled = localStorage.getItem(ANTICLOSE_KEY) === "1";
-    if (!enabled) return;
-
-    window.onbeforeunload = () =>
-      "Are you sure you want to close this page?";
-  }
-
-  // ---------- XMAS DECORATIONS ----------
-  function addXmasDecorIfNeeded(theme) {
-    if (theme !== "xmas") return;
-
-    const snow = document.createElement("div");
-    snow.className = "xmas-snow";
-    document.body.appendChild(snow);
-
-    const garland = document.createElement("div");
-    garland.className = "xmas-garland";
-    document.body.appendChild(garland);
-  }
-
-  // ---------- BOOTSTRAP ----------
-  function bootstrap() {
-    document.documentElement.setAttribute("data-original-title", document.title);
-
-    launchIntoAboutBlankIfEnabled();
-    installAntiCloseIfEnabled();
+  // INIT ========================================================
+  function boot() {
+    document.documentElement.dataset.originalTitle = document.title;
 
     const accent = loadAccent();
     const theme = loadTheme();
     const bg = loadBackground();
-    addXmasDecorIfNeeded(theme);
     loadTabCloak();
 
-    const evt = new CustomEvent("s0lace:settingsLoaded", {
-      detail: { accent, theme, bgMode: bg.mode, bgUrl: bg.url },
-    });
-    window.dispatchEvent(evt);
+    window.dispatchEvent(
+      new CustomEvent("s0lace:settingsLoaded", {
+        detail: { accent, theme, bgMode: bg.mode, bgUrl: bg.url }
+      })
+    );
   }
 
-  document.addEventListener("DOMContentLoaded", bootstrap);
+  document.addEventListener("DOMContentLoaded", boot);
 
-  // expose
+  // Export API
   window.S0LACE = {
     applyAccent,
     applyTabCloak,
     clearTabCloak,
     applyTheme,
-    applyBackground,
-    applyPanicConfig,
+    applyBackground
   };
 })();
