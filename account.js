@@ -1,10 +1,11 @@
+// account.js - Handles Sign Up, Login, Logout, and Auto Sync
+
 import { auth, db } from "./firebase.js";
 import {
-  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged,
-  updateProfile
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
 import {
@@ -13,111 +14,94 @@ import {
   getDoc
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-/* --------------------------
-   ELEMENTS
--------------------------- */
-const loginEmail = document.getElementById("login-email");
-const loginPass = document.getElementById("login-pass");
-const loginBtn = document.getElementById("login-btn");
+const loginBox = document.getElementById("login-box");
+const accountBox = document.getElementById("account-box");
 
-const signupEmail = document.getElementById("signup-email");
-const signupPass = document.getElementById("signup-pass");
-const signupName = document.getElementById("signup-name");
+const emailInput = document.getElementById("email-input");
+const passInput = document.getElementById("pass-input");
+
 const signupBtn = document.getElementById("signup-btn");
-
+const loginBtn = document.getElementById("login-btn");
 const logoutBtn = document.getElementById("logout-btn");
 
-const statusBox = document.getElementById("account-status");
-const userBox = document.getElementById("user-info");
+const userEmailDisplay = document.getElementById("user-email");
 
-/* --------------------------
-   LOGIN
--------------------------- */
-loginBtn?.addEventListener("click", async () => {
-  const email = loginEmail.value.trim();
-  const pass = loginPass.value.trim();
+function showLogin() {
+  loginBox.style.display = "flex";
+  accountBox.style.display = "none";
+}
 
-  if (!email || !pass) return alert("Fill in email + password.");
+function showAccount(email) {
+  loginBox.style.display = "none";
+  accountBox.style.display = "flex";
+  userEmailDisplay.textContent = email;
 
+  // Auto-load settings to localStorage
+  loadUserData();
+}
+
+async function loadUserData() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const ref = doc(db, "users", user.uid);
+  const snap = await getDoc(ref);
+
+  if (snap.exists()) {
+    const data = snap.data();
+
+    // Push to localStorage so settings page sees them
+    if (data.settings) {
+      for (const [k, v] of Object.entries(data.settings)) {
+        localStorage.setItem(k, v);
+      }
+    }
+  }
+}
+
+async function saveUserData() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  // Collect ALL S0LACE settings from localStorage
+  const settings = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key.startsWith("s0lace")) settings[key] = localStorage.getItem(key);
+  }
+
+  await setDoc(doc(db, "users", user.uid), { settings }, { merge: true });
+}
+
+// Automatically sync every 5 seconds
+setInterval(saveUserData, 5000);
+
+// SIGN UP ----------------------------
+signupBtn.addEventListener("click", async () => {
   try {
-    await signInWithEmailAndPassword(auth, email, pass);
+    await createUserWithEmailAndPassword(auth, emailInput.value, passInput.value);
+    alert("Account created!");
   } catch (err) {
-    alert("Login failed: " + err.message);
+    alert(err.message);
   }
 });
 
-/* --------------------------
-   SIGNUP
--------------------------- */
-signupBtn?.addEventListener("click", async () => {
-  const email = signupEmail.value.trim();
-  const pass = signupPass.value.trim();
-  const name = signupName.value.trim();
-
-  if (!email || !pass || !name) return alert("Fill every field.");
-
+// LOGIN ----------------------------
+loginBtn.addEventListener("click", async () => {
   try {
-    // Create account
-    const userCred = await createUserWithEmailAndPassword(auth, email, pass);
-    const user = userCred.user;
-
-    // Set Display Name
-    await updateProfile(user, {
-      displayName: name
-    });
-
-    // Create User Profile in Firestore
-    await setDoc(doc(db, "users", user.uid), {
-      name,
-      email,
-      created: Date.now(),
-      theme: localStorage.getItem("s0laceTheme") || "dark",
-      accent: localStorage.getItem("s0laceAccent") || "green",
-      bgMode: localStorage.getItem("s0laceBgMode") || "default"
-    });
-
+    await signInWithEmailAndPassword(auth, emailInput.value, passInput.value);
   } catch (err) {
-    alert("Signup failed: " + err.message);
+    alert(err.message);
   }
 });
 
-/* --------------------------
-   LOGOUT
--------------------------- */
-logoutBtn?.addEventListener("click", async () => {
+// LOG OUT ---------------------------
+logoutBtn.addEventListener("click", async () => {
   await signOut(auth);
 });
 
-/* --------------------------
-   AUTO SYNC
--------------------------- */
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    statusBox.textContent = "Logged in";
-    logoutBtn.style.display = "inline-block";
-
-    // Show user info
-    userBox.innerHTML = `
-      <div>UID: ${user.uid}</div>
-      <div>Name: ${user.displayName || "None"}</div>
-      <div>Email: ${user.email}</div>
-    `;
-
-    // Pull Firestore settings if exist
-    const ref = doc(db, "users", user.uid);
-    const snap = await getDoc(ref);
-
-    if (snap.exists()) {
-      const data = snap.data();
-
-      // OPTIONAL: Sync their settings to your site instantly
-      if (data.theme) window.S0LACE.applyTheme(data.theme, true);
-      if (data.accent) window.S0LACE.applyAccent(data.accent, true);
-      if (data.bgMode) window.S0LACE.applyBackground(data.bgMode, "", true);
-    }
-  } else {
-    statusBox.textContent = "Not signed in";
-    logoutBtn.style.display = "none";
-    userBox.innerHTML = "";
-  }
+// WATCH LOGIN STATE -----------------
+onAuthStateChanged(auth, (user) => {
+  if (user) showAccount(user.email);
+  else showLogin();
 });
