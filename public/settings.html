@@ -12,64 +12,50 @@
 
   <style>
     .settings-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:16px;
+      margin-bottom:30px;
     }
+    @media(max-width:1000px){.settings-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:700px){.settings-grid{grid-template-columns:1fr}}
 
-    @media (max-width: 1000px) {
-      .settings-grid { grid-template-columns: repeat(2, 1fr); }
+    .settings-panel{
+      border:2px solid var(--border-hard);
+      background:var(--panel);
+      padding:16px;
+      box-shadow:0 0 0 1px #000,0 0 20px rgba(0,0,0,.7);
+      font-family:"Press Start 2P";
+      font-size:10px;
     }
-    @media (max-width: 700px) {
-      .settings-grid { grid-template-columns: 1fr; }
+    .settings-title{
+      color:var(--accent);
+      margin-bottom:12px;
+      text-shadow:0 0 6px var(--accent);
     }
-
-    .settings-panel {
-      border: 2px solid var(--border-hard);
-      background: var(--panel);
-      padding: 16px;
-      font-family: "Press Start 2P";
-      font-size: 10px;
+    .settings-input,.settings-select{
+      width:100%;
+      padding:6px 8px;
+      margin-top:4px;
+      border:2px solid var(--border-hard);
+      background:#000;
+      color:var(--fg);
+      font-family:"Press Start 2P";
+      font-size:9px;
     }
-
-    .settings-title {
-      color: var(--accent);
-      margin-bottom: 10px;
-      text-shadow: 0 0 6px var(--accent);
+    .settings-btn{
+      width:100%;
+      margin-top:8px;
+      padding:6px 10px;
+      border:2px solid var(--accent);
+      background:var(--accent-soft);
+      font-family:"Press Start 2P";
+      font-size:9px;
+      color:var(--accent);
+      cursor:pointer;
     }
-
-    .settings-input,
-    .settings-select {
-      width: 100%;
-      padding: 6px 8px;
-      margin-top: 6px;
-      border: 2px solid var(--border-hard);
-      background: #000;
-      color: var(--fg);
-      font-family: "Press Start 2P";
-      font-size: 9px;
-    }
-
-    .settings-btn {
-      width: 100%;
-      margin-top: 10px;
-      padding: 6px;
-      border: 2px solid var(--accent);
-      background: var(--accent-soft);
-      color: var(--accent);
-      font-family: "Press Start 2P";
-      font-size: 9px;
-      cursor: pointer;
-    }
-
-    .settings-btn:hover {
-      box-shadow: 0 0 14px rgba(0,255,127,.6);
-    }
-
-    .status {
-      margin-top: 6px;
-      font-size: 8px;
-      color: var(--fg-dim);
+    .settings-btn:hover{
+      box-shadow:0 0 14px var(--accent);
     }
   </style>
 </head>
@@ -90,12 +76,11 @@
 
   <div class="settings-grid">
 
-    <!-- TAB CLOAK -->
+    <!-- TAB CLOAKING -->
     <section class="settings-panel">
       <div class="settings-title">TAB CLOAKING</div>
-
       <select id="cloak-select" class="settings-select">
-        <option value="">SELECT PRESET</option>
+        <option value="">SELECT…</option>
         <option value="drive">GOOGLE DRIVE</option>
         <option value="schoology">SCHOOLOGY</option>
         <option value="docs">GOOGLE DOCS</option>
@@ -103,71 +88,55 @@
         <option value="custom">CUSTOM</option>
       </select>
 
-      <input id="cloak-title" class="settings-input" placeholder="Custom Title">
-      <input id="cloak-icon" class="settings-input" placeholder="Favicon URL">
-
-      <button class="settings-btn" id="apply-cloak">APPLY</button>
-      <button class="settings-btn" id="reset-cloak">RESET</button>
-
-      <div id="cloak-status" class="status"></div>
+      <div id="custom-cloak" style="display:none;margin-top:12px">
+        <input id="cloak-title" class="settings-input" placeholder="Title">
+        <input id="cloak-icon" class="settings-input" placeholder="Favicon URL">
+        <button class="settings-btn" id="apply-cloak">APPLY</button>
+        <button class="settings-btn" id="reset-cloak">RESET</button>
+      </div>
     </section>
 
     <!-- APPEARANCE -->
     <section class="settings-panel">
       <div class="settings-title">APPEARANCE</div>
-
       <select id="theme-select" class="settings-select">
         <option value="dark">DARK</option>
         <option value="baby">BLUE</option>
         <option value="xmas">GREEN</option>
       </select>
 
-      <select id="accent-select" class="settings-select">
+      <select id="accent-select" class="settings-select" style="margin-top:12px">
         <option value="green">GREEN</option>
         <option value="violet">VIOLET</option>
         <option value="amber">AMBER</option>
         <option value="white">WHITE</option>
       </select>
-
-      <div id="appearance-status" class="status"></div>
     </section>
 
     <!-- BACKGROUND -->
     <section class="settings-panel">
       <div class="settings-title">BACKGROUND</div>
-
       <select id="bg-mode" class="settings-select">
         <option value="default">DEFAULT</option>
-        <option value="gif-stars">STARRY GIF</option>
+        <option value="gif-stars">STARRY</option>
         <option value="custom">CUSTOM</option>
       </select>
-
-      <input id="bg-url" class="settings-input" placeholder="Image URL">
-
-      <div id="bg-status" class="status"></div>
+      <input id="bg-url" class="settings-input" placeholder="Image URL" style="display:none">
     </section>
 
     <!-- SECURITY -->
     <section class="settings-panel">
       <div class="settings-title">SECURITY</div>
-
-      <label>
-        <input type="checkbox" id="anti-close"> ANTI-CLOSE
-      </label>
-
+      <label><input type="checkbox" id="anti-close"> ANTI-CLOSE</label>
       <button class="settings-btn" id="blank-launch">ABOUT:BLANK</button>
-      <div id="security-status" class="status"></div>
     </section>
 
     <!-- SAVE / LOAD -->
     <section class="settings-panel">
-      <div class="settings-title">SAVE FILE</div>
-
-      <button class="settings-btn" id="export-save">EXPORT SAVE</button>
-      <button class="settings-btn" id="import-save">IMPORT SAVE</button>
-      <input type="file" id="import-file" hidden>
-
-      <div id="save-status" class="status"></div>
+      <div class="settings-title">SAVE / LOAD</div>
+      <button class="settings-btn" id="export">EXPORT SAVE</button>
+      <input type="file" id="import" hidden>
+      <button class="settings-btn" id="import-btn">IMPORT SAVE</button>
     </section>
 
     <!-- INFO -->
@@ -180,94 +149,69 @@
 </main>
 
 <script>
-/* ========= HELPERS ========= */
-const $ = id => document.getElementById(id);
-const flash = (el, msg) => {
-  el.textContent = msg;
-  setTimeout(() => el.textContent = "", 1500);
-};
-
-/* ========= TAB CLOAK ========= */
-const PRESETS = {
+const PRESETS={
   drive:{title:"My Drive - Google Drive",iconHref:"https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png"},
   schoology:{title:"Schoology",iconHref:"https://asset-cdn.schoology.com/sites/all/themes/schoology_theme/favicon.ico"},
   docs:{title:"Google Docs",iconHref:"https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico"},
   google:{title:"Google",iconHref:"favicon.ico"}
 };
 
-$("apply-cloak").onclick = () => {
-  const sel = $("cloak-select").value;
-  let cfg = sel !== "custom" ? PRESETS[sel] : {
-    title: $("cloak-title").value,
-    iconHref: $("cloak-icon").value
-  };
-  if (!cfg?.title) return;
-  cfg.enabled = true;
-  window.S0LACE.applyTabCloak(cfg,true);
+const qs=id=>document.getElementById(id);
+
+qs("cloak-select").onchange=e=>{
+  const v=e.target.value;
+  qs("custom-cloak").style.display=v==="custom"?"block":"none";
+  if(PRESETS[v]){
+    S0LACE.applyTabCloak({enabled:true,...PRESETS[v]},true);
+    localStorage.setItem("s0laceTabCloak",JSON.stringify({enabled:true,...PRESETS[v]}));
+  }
+};
+
+qs("apply-cloak").onclick=()=>{
+  const cfg={enabled:true,title:qs("cloak-title").value,iconHref:qs("cloak-icon").value};
+  S0LACE.applyTabCloak(cfg,true);
   localStorage.setItem("s0laceTabCloak",JSON.stringify(cfg));
-  flash($("cloak-status"),"Cloak applied");
 };
 
-$("reset-cloak").onclick = () => {
-  window.S0LACE.clearTabCloak(true);
+qs("reset-cloak").onclick=()=>{
+  S0LACE.clearTabCloak(true);
   localStorage.removeItem("s0laceTabCloak");
-  flash($("cloak-status"),"Cloak reset");
 };
 
-/* ========= APPEARANCE ========= */
-$("theme-select").onchange = e => {
-  window.S0LACE.applyTheme(e.target.value,true);
-  flash($("appearance-status"),"Theme applied");
+qs("theme-select").onchange=e=>S0LACE.applyTheme(e.target.value,true);
+qs("accent-select").onchange=e=>S0LACE.applyAccent(e.target.value,true);
+
+qs("bg-mode").onchange=e=>{
+  qs("bg-url").style.display=e.target.value==="custom"?"block":"none";
+  S0LACE.applyBackground(e.target.value,qs("bg-url").value,true);
 };
 
-$("accent-select").onchange = e => {
-  window.S0LACE.applyAccent(e.target.value,true);
-  flash($("appearance-status"),"Accent applied");
+qs("anti-close").checked=localStorage.getItem("s0laceAntiClose")==="1";
+qs("anti-close").onchange=e=>{
+  e.target.checked?S0LACE.enableAntiClose():S0LACE.disableAntiClose();
 };
 
-/* ========= BACKGROUND ========= */
-$("bg-mode").onchange = () => {
-  window.S0LACE.applyBackground($("bg-mode").value,$("bg-url").value,true);
-  flash($("bg-status"),"Background updated");
+qs("blank-launch").onclick=()=>{
+  const w=window.open("about:blank");
+  if(w) w.document.write(`<iframe src="${location.origin}/index.html" style="border:none;width:100vw;height:100vh"></iframe>`);
 };
 
-/* ========= SECURITY ========= */
-$("anti-close").onchange = e => {
-  e.target.checked ? window.S0LACE.enableAntiClose() : window.S0LACE.disableAntiClose();
-  flash($("security-status"),"Updated");
-};
-
-$("blank-launch").onclick = () => {
-  const w = window.open("about:blank");
-  if(!w) return;
-  w.document.write(`<iframe src="${location.origin}" style="border:none;width:100vw;height:100vh"></iframe>`);
-};
-
-/* ========= SAVE / LOAD ========= */
-$("export-save").onclick = () => {
-  const save = {};
-  Object.keys(localStorage).forEach(k=>{
-    if(k.startsWith("s0lace")||k.startsWith("game:")) save[k]=localStorage[k];
-  });
-  const blob = new Blob([JSON.stringify(save,null,2)],{type:"application/json"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "s0lace-save.json";
+qs("export").onclick=()=>{
+  const data={...localStorage};
+  const blob=new Blob([JSON.stringify(data)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="s0lace-save.json";
   a.click();
-  flash($("save-status"),"Save exported");
 };
 
-$("import-save").onclick = () => $("import-file").click();
-
-$("import-file").onchange = e => {
-  const file = e.target.files[0];
-  if(!file) return;
-  file.text().then(t=>{
-    const data = JSON.parse(t);
-    Object.keys(data).forEach(k=>localStorage.setItem(k,data[k]));
-    location.reload();
-  });
+qs("import-btn").onclick=()=>qs("import").click();
+qs("import").onchange=e=>{
+  const r=new FileReader();
+  r.onload=()=>{const d=JSON.parse(r.result);Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));location.reload();};
+  r.readAsText(e.target.files[0]);
 };
 </script>
+
 </body>
 </html>
