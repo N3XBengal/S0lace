@@ -17,8 +17,13 @@
       gap: 16px;
       margin-bottom: 30px;
     }
-    @media (max-width: 1000px) { .settings-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 700px) { .settings-grid { grid-template-columns: 1fr; } }
+
+    @media (max-width: 1000px) {
+      .settings-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 700px) {
+      .settings-grid { grid-template-columns: 1fr; }
+    }
 
     .settings-panel {
       border: 2px solid var(--border-hard);
@@ -50,14 +55,15 @@
 
     .settings-btn {
       width: 100%;
-      margin-top: 8px;
-      padding: 6px 10px;
+      margin-top: 10px;
+      padding: 8px 10px;
       border: 2px solid var(--accent);
       background: var(--accent-soft);
       font-family: "Press Start 2P";
       font-size: 9px;
       color: var(--accent);
       cursor: pointer;
+      text-align: center;
     }
 
     .settings-btn:hover {
@@ -94,21 +100,23 @@
         <option value="schoology">SCHOOLOGY</option>
         <option value="docs">GOOGLE DOCS</option>
         <option value="google">GOOGLE</option>
-        <option value="custom">CUSTOM…</option>
+        <option value="custom">CUSTOM...</option>
       </select>
 
       <div id="custom-cloak-box" style="display:none; margin-top:12px;">
         <label>Title
           <input id="cloak-title" class="settings-input" />
         </label>
+
         <label>Favicon
           <input id="cloak-icon" class="settings-input" />
         </label>
+
         <button class="settings-btn" id="apply-custom-cloak">APPLY</button>
         <button class="settings-btn" id="reset-cloak">RESET</button>
       </div>
 
-      <div id="cloak-status" style="font-size:8px; margin-top:6px; color:var(--fg-dim);"></div>
+      <div id="cloak-status" style="margin-top:8px;font-size:8px;color:var(--fg-dim);"></div>
     </section>
 
     <!-- APPEARANCE -->
@@ -142,7 +150,7 @@
         <option value="custom">CUSTOM</option>
       </select>
 
-      <div id="bg-url-row" style="display:none; margin-top:12px;">
+      <div id="bg-url-row" style="display:none;margin-top:12px;">
         <label>Image URL
           <input id="bg-url" class="settings-input" />
         </label>
@@ -155,7 +163,7 @@
 
       <label>
         <input type="checkbox" id="anti-close-toggle" />
-        ANTI-CLOSE PROTECTION
+        ENABLE ANTI-CLOSE
       </label>
 
       <button class="settings-btn" id="blank-launch">
@@ -163,34 +171,36 @@
       </button>
     </section>
 
-    <!-- SAVE / LOAD -->
+    <!-- SAVE FILE -->
     <section class="settings-panel">
       <div class="settings-title">SAVE FILE</div>
 
-      <button class="settings-btn" id="btn-export">EXPORT SAVE FILE</button>
+      <button class="settings-btn" id="btn-export">
+        EXPORT SAVE
+      </button>
 
-      <label class="settings-btn" style="cursor:pointer;">
-        IMPORT SAVE FILE
-        <input type="file" id="btn-import" accept=".json" hidden />
-      </label>
+      <button class="settings-btn" id="btn-import-trigger">
+        IMPORT SAVE
+      </button>
 
-      <div style="font-size:8px; margin-top:6px; color:var(--fg-dim);">
-        Includes settings + game progress
+      <input type="file" id="btn-import" accept=".json" style="display:none;" />
+
+      <div style="font-size:8px;margin-top:8px;color:var(--fg-dim);">
+        Saves settings + game progress
       </div>
     </section>
 
-    <!-- STORAGE -->
+    <!-- INFO -->
     <section class="settings-panel">
-      <div class="settings-title">STORAGE</div>
-      <button class="settings-btn" id="btn-reset-settings">RESET SETTINGS</button>
-      <button class="settings-btn" id="btn-clear-media">CLEAR MEDIA CACHE</button>
+      <div class="settings-title">INFO</div>
+      <a href="about.html"><button class="settings-btn">ABOUT US</button></a>
     </section>
 
   </div>
 </main>
 
 <script>
-/* ================= TAB CLOAK ================= */
+/* ---------- TAB CLOAK ---------- */
 const PRESETS = {
   drive:{enabled:true,title:"My Drive - Google Drive",iconHref:"https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png"},
   schoology:{enabled:true,title:"Schoology",iconHref:"https://asset-cdn.schoology.com/sites/all/themes/schoology_theme/favicon.ico"},
@@ -198,50 +208,51 @@ const PRESETS = {
   google:{enabled:true,title:"Google",iconHref:"favicon.ico"}
 };
 
-const cloakSelect = document.getElementById("cloak-select");
-const customBox = document.getElementById("custom-cloak-box");
-const titleInput = document.getElementById("cloak-title");
-const iconInput = document.getElementById("cloak-icon");
-const statusEl = document.getElementById("cloak-status");
-
-function applyCloak(cfg){
-  window.S0LACE.applyTabCloak(cfg,true);
-  localStorage.setItem("s0laceTabCloak",JSON.stringify(cfg));
-  statusEl.textContent="Cloak applied.";
-}
+const cloakSelect=document.getElementById("cloak-select");
+const customBox=document.getElementById("custom-cloak-box");
+const titleInput=document.getElementById("cloak-title");
+const iconInput=document.getElementById("cloak-icon");
+const statusEl=document.getElementById("cloak-status");
 
 cloakSelect.onchange=()=>{
   const v=cloakSelect.value;
   if(v==="custom"){customBox.style.display="block";return;}
   customBox.style.display="none";
-  if(PRESETS[v]) applyCloak(PRESETS[v]);
+  if(PRESETS[v]){
+    localStorage.setItem("s0laceTabCloak",JSON.stringify(PRESETS[v]));
+    window.S0LACE.applyTabCloak(PRESETS[v],true);
+    statusEl.textContent="Cloak applied.";
+  }
 };
 
 document.getElementById("apply-custom-cloak").onclick=()=>{
-  if(!titleInput.value.trim()) return;
-  applyCloak({enabled:true,title:titleInput.value.trim(),iconHref:iconInput.value.trim()});
+  if(!titleInput.value) return;
+  const cfg={enabled:true,title:titleInput.value,iconHref:iconInput.value};
+  localStorage.setItem("s0laceTabCloak",JSON.stringify(cfg));
+  window.S0LACE.applyTabCloak(cfg,true);
+  statusEl.textContent="Custom cloak applied.";
 };
 
 document.getElementById("reset-cloak").onclick=()=>{
-  window.S0LACE.clearTabCloak(true);
   localStorage.removeItem("s0laceTabCloak");
+  window.S0LACE.clearTabCloak(true);
   statusEl.textContent="Cloak reset.";
 };
 
-/* ================= APPEARANCE ================= */
-theme-select.onchange=e=>S0LACE.applyTheme(e.target.value,true);
-accent-select.onchange=e=>S0LACE.applyAccent(e.target.value,true);
+/* ---------- APPEARANCE ---------- */
+theme-select.onchange=e=>window.S0LACE.applyTheme(e.target.value,true);
+accent-select.onchange=e=>window.S0LACE.applyAccent(e.target.value,true);
 
-/* ================= BACKGROUND ================= */
+/* ---------- BACKGROUND ---------- */
 bg-mode.onchange=()=>{
   bg-url-row.style.display=bg-mode.value==="custom"?"block":"none";
-  S0LACE.applyBackground(bg-mode.value,bg-url.value,true);
+  window.S0LACE.applyBackground(bg-mode.value,bg-url.value,true);
 };
 
-/* ================= SECURITY ================= */
+/* ---------- SECURITY ---------- */
 anti-close-toggle.checked=localStorage.getItem("s0laceAntiClose")==="1";
 anti-close-toggle.onchange=e=>{
-  e.target.checked?S0LACE.enableAntiClose():S0LACE.disableAntiClose();
+  e.target.checked?window.S0LACE.enableAntiClose():window.S0LACE.disableAntiClose();
 };
 
 blank-launch.onclick=()=>{
@@ -250,48 +261,32 @@ blank-launch.onclick=()=>{
   w.document.write(`<iframe src="${location.origin}/index.html" style="border:none;width:100vw;height:100vh"></iframe>`);
 };
 
-/* ================= SAVE / LOAD ================= */
-const PREFIXES=["s0lace","game:","progress:","save:","UNITY","playerPrefs"];
-
+/* ---------- SAVE / LOAD ---------- */
 btn-export.onclick=()=>{
   const data={};
-  for(let i=0;i<localStorage.length;i++){
-    const k=localStorage.key(i);
-    if(PREFIXES.some(p=>k.startsWith(p))) data[k]=localStorage.getItem(k);
-  }
-  const blob=new Blob([JSON.stringify({v:1,t:Date.now(),data},null,2)],{type:"application/json"});
+  Object.keys(localStorage).forEach(k=>{
+    if(k.startsWith("s0lace")||k.startsWith("game_")) data[k]=localStorage.getItem(k);
+  });
+  const blob=new Blob([JSON.stringify({data},null,2)],{type:"application/json"});
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
   a.download="s0lace-save.json";
   a.click();
 };
 
+btn-import-trigger.onclick=()=>btn-import.click();
 btn-import.onchange=e=>{
   const f=e.target.files[0];
   if(!f) return;
   const r=new FileReader();
   r.onload=()=>{
-    const p=JSON.parse(r.result);
-    Object.entries(p.data||{}).forEach(([k,v])=>localStorage.setItem(k,v));
-    alert("Save loaded. Reloading…");
+    const j=JSON.parse(r.result).data||{};
+    Object.entries(j).forEach(([k,v])=>localStorage.setItem(k,v));
     location.reload();
   };
   r.readAsText(f);
 };
-
-/* ================= RESET ================= */
-btn-reset-settings.onclick=()=>{
-  if(!confirm("Reset all settings?"))return;
-  Object.keys(localStorage).forEach(k=>{
-    if(k.startsWith("s0lace")) localStorage.removeItem(k);
-  });
-  location.reload();
-};
-
-btn-clear-media.onclick=()=>{
-  localStorage.removeItem("s0laceMediaCache");
-  alert("Media cache cleared.");
-};
 </script>
+
 </body>
 </html>
