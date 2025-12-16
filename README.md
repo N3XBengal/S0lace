@@ -37,5 +37,5 @@ https://project-s0lace.onrender.com
 3. Connect your GitHub fork
 4. Settings:
    - Build Command: `npm install --omit=dev`
-   - Start Command: `npm scr/index.js`
+   - Start Command: `npm start`
 5. Deploy 
