@@ -39,6 +39,32 @@
   filter: drop-shadow(0 0 6px var(--accent));
 }
 
+.media-row {
+  margin-top: 28px;
+}
+
+.media-row-title {
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--fg);
+  margin-bottom: 10px;
+}
+
+.media-row-track {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: none;
+}
+.media-row-track::-webkit-scrollbar {
+  display: none;
+}
+
+.media-row .media-card {
+  min-width: 160px;
+}
+
 
 /* FIX POPULAR GAMES */
 .popular-wrap {
