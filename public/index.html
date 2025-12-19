@@ -13,15 +13,15 @@
 <link rel="stylesheet" href="index.css" />
 
 <script src="/scram/scramjet.all.js"></script>
-<script src="register-sw.js" defer></script>
-<script src="global-hub.js" defer></script>
+<script src="/register-sw.js" defer></script>
+<script src="/global-hub.js" defer></script>
 
 <style>
 :root { --fg: #fff; --fg-dim: #888; --accent: #00ffcc; --bg: #0a0a0a; }
 body { min-height: 100vh; margin: 0; background: var(--bg); color: var(--fg); font-family: sans-serif; overflow-x: hidden; }
 main { min-height: 100vh; display: flex; justify-content: center; align-items: center; }
 
-/* PROXY LOADING SCREEN (Hidden by default) */
+/* PROXY LOADING SCREEN (Triggers on Enter) */
 #proxy-loader {
     position: fixed; inset: 0; background: var(--bg); 
     display: none; flex-direction: column; justify-content: center; align-items: center;
@@ -94,7 +94,7 @@ main { min-height: 100vh; display: flex; justify-content: center; align-items: c
 </main>
 
 <script>
-// UI LOGIC
+// --- UI LOGIC ---
 function getAccent(){ return localStorage.getItem("s0laceAccent") || "gray"; }
 function updateIcons(){
   document.querySelectorAll(".side-icon").forEach(a => {
@@ -122,7 +122,7 @@ if(navigator.getBattery){
   });
 }
 
-// PROXY SUBMIT LOGIC
+// --- PROXY HANDLER ---
 document.getElementById("sj-form").addEventListener("submit", e => {
   e.preventDefault();
   const address = document.getElementById("sj-address").value.trim();
@@ -131,17 +131,20 @@ document.getElementById("sj-form").addEventListener("submit", e => {
   const engine = document.getElementById("sj-search-engine").value;
   const url = /^https?:\/\//i.test(address) ? address : engine.replace("%s", encodeURIComponent(address));
 
-  // Show the loader only after clicking Enter
+  // Show the loader screen
   document.getElementById('proxy-loader').style.display = 'flex';
 
-  if (window.scramjet || typeof scramjet !== 'undefined') {
+  // Standard Scramjet call
+  if (typeof scramjet !== 'undefined') {
+      scramjet.open(url);
+  } else if (window.scramjet) {
       window.scramjet.open(url);
   } else {
-      // Fallback: If scramjet isn't found, alert the user but keep the page alive
+      // If scripts still fail to find the original location
       setTimeout(() => {
-          document.getElementById('proxy-loader').style.display = 'none';
-          alert("Error: Scramjet engine files are missing in /scram/ folder.");
-      }, 2000);
+        document.getElementById('proxy-loader').style.display = 'none';
+        alert("Scramjet engine not initialized. Check /scram/ paths.");
+      }, 1500);
   }
 });
 </script>
