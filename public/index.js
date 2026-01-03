@@ -54,38 +54,55 @@ if (
     event.preventDefault();
 
     try {
-      // register service worker before using Scramjet
+      // 1. Register Service Worker
       if (typeof registerSW === "function") {
         await registerSW();
       } else {
         console.warn("registerSW is not defined");
       }
+
+      // 2. Prepare URL
+      const url = search(address.value, searchEngine.value);
+      let wispUrl =
+        (location.protocol === "https:" ? "wss" : "ws") +
+        "://" +
+        location.host +
+        "/wisp/";
+
+      // 3. Setup BareMux Transport (This is where your error was happening)
+      const current = await connection.getTransport();
+      if (current !== "/epoxy/index.mjs") {
+        await connection.setTransport("/epoxy/index.mjs", [{ wisp: wispUrl }]);
+      }
+
+      // 4. Create and inject the frame
+      const frame = scramjet.createFrame();
+      frame.frame.id = "sj-frame";
+      document.body.appendChild(frame.frame);
+      frame.go(url);
+
     } catch (err) {
-      if (error) error.textContent = "Failed to register service worker.";
+      console.error("Proxy Error:", err);
+      
+      // AUTO-FIX: Check for the specific DB error and reset if found
+      if (err.name === 'NotFoundError' || err.message.includes('object store')) {
+          console.warn("BareMux Database is corrupted. Resetting...");
+          // Delete the corrupted database
+          const req = indexedDB.deleteDatabase("bare-mux");
+          req.onsuccess = () => {
+              // Reload to re-initialize cleanly
+              location.reload();
+          };
+          // Update UI while reloading
+          if (error) error.textContent = "Database fixed. Reloading...";
+          return;
+      }
+
+      if (error) error.textContent = "Failed to initiate proxy.";
       if (errorCode) errorCode.textContent = err.toString();
       throw err;
     }
-
-    const url = search(address.value, searchEngine.value);
-
-    let wispUrl =
-      (location.protocol === "https:" ? "wss" : "ws") +
-      "://" +
-      location.host +
-      "/wisp/";
-
-    // ensure BareMux has a transport set
-    const current = await connection.getTransport();
-    if (current !== "/epoxy/index.mjs") {
-      await connection.setTransport("/epoxy/index.mjs", [{ wisp: wispUrl }]);
-    }
-
-    const frame = scramjet.createFrame();
-    frame.frame.id = "sj-frame";
-    document.body.appendChild(frame.frame);
-    frame.go(url);
   });
 } else {
   // Not on the proxy page or libs not loaded – do nothing.
-  // This prevents crashes on media/games/apps/mediaplayer pages.
 }
