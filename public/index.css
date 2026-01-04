@@ -1582,4 +1582,43 @@ main.player-main {
   .media-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  /* HARD RESET MEDIA CARDS */
+.media-card,
+.tmdb-card,
+.movie-card,
+.tv-card {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* KILL PSEUDO ELEMENTS (THIS IS THE SQUARE LINE) */
+.media-card::before,
+.media-card::after,
+.tmdb-card::before,
+.tmdb-card::after,
+.poster-thumb::before,
+.poster-thumb::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* ENSURE IMAGE IS THE ONLY VISIBLE THING */
+.poster-thumb {
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.poster-thumb img {
+  display: block;
+  border-radius: 16px;
+  border: none !important;
+  outline: none !important;
+}
+
 }
