@@ -34,11 +34,30 @@
 
 .media-card {
   background: transparent;
-  border-radius: 14px;
-  overflow: hidden;
-  border: 1px solid var(--glass-border);
-  transition: transform 0.15s ease, border-color 0.15s ease;
+  border: none;               /* ← kills the frame */
+  border-radius: 16px;
+  overflow: hidden;           /* ← curves poster */
+  padding: 0;
 }
+
+.poster-thumb {
+  border-radius: 16px;
+  overflow: hidden;
+  background: transparent;
+}
+
+.poster-thumb img {
+  border-radius: 16px;
+  display: block;
+}
+
+#media-search {
+  border-radius: 14px !important;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
 
 .media-card:hover {
   transform: translateY(-3px);
