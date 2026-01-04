@@ -65,6 +65,93 @@
   min-width: 160px;
 }
 
+.page-header {
+  border-bottom: 1px solid #1e1e1e;
+  padding-bottom: 10px;
+  margin-bottom: 18px;
+}
+
+.page-header h1 {
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: #e6e6e6;
+}
+
+.media-section {
+  background: #0c0c0c;
+  border: 1px solid #1f1f1f;
+  padding: 14px;
+  margin-bottom: 20px;
+}
+
+.media-section-title {
+  font-size: 10px;
+  color: #9a9a9a;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+}
+
+.media-card {
+  background: #080808;
+  border: 1px solid #222;
+  transition: border-color 0.15s ease;
+}
+
+.media-card:hover {
+  border-color: #555;
+}
+
+.poster-thumb {
+  position: relative;
+  background: #000;
+}
+
+.poster-thumb img {
+  width: 100%;
+  display: block;
+}
+
+.media-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0,0,0,0.85);
+  padding: 6px;
+  font-size: 8px;
+  color: #d0d0d0;
+  border-top: 1px solid #222;
+  opacity: 1;
+}
+
+#continue-section {
+  background: #0c0c0c;
+  border: 1px solid #2a2a2a;
+}
+
+#continue-grid .media-card {
+  background: #050505;
+}
+
+#media-search {
+  background: #050505;
+  border: 1px solid #2a2a2a;
+  color: #e0e0e0;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  padding: 6px 8px;
+}
+
+#media-search:focus {
+  border-color: #666;
+}
+
 
 /* --- S0LACE THEME UPDATE --- */
 
