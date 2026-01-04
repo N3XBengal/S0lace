@@ -1929,3 +1929,10 @@ a.game-card img {
   border-radius: 14px;
 }
 
+.game-card::before,
+.game-card::after,
+.game-thumb::before,
+.game-thumb::after {
+  content: none !important;
+  display: none !important;
+}
