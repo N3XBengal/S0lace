@@ -8,130 +8,66 @@
     <link rel="shortcut icon" content="favicon.ico" />
     <link rel="stylesheet" href="index.css" />
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
     <style>
       body {
         margin: 0; padding: 0; height: 100%;
         background-color: #0f0f0f;
-        display: flex;
-        overflow: hidden;
-        color: white;
+        display: flex; overflow: hidden; color: white;
       }
 
       .player-main {
         display: flex; flex-direction: column;
         height: 100vh; width: 100%;
-        font-family: sans-serif;
+        font-family: 'Inter', -apple-system, sans-serif;
       }
 
-      /* FULL SCREEN CHAT SHELL */
       .chat-shell {
         flex: 1;
         margin: 15px;
         background: #050505;
         border-radius: 20px;
         border: 2px solid #1a1a1a;
-        display: flex;
-        flex-direction: column;
+        display: flex; flex-direction: column;
         overflow: hidden;
         box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       }
 
       #chat-history {
-        flex: 1;
-        overflow-y: auto;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
+        flex: 1; overflow-y: auto; padding: 25px;
+        display: flex; flex-direction: column; gap: 20px;
         scroll-behavior: smooth;
       }
 
-      /* SCROLLBAR STYLING */
-      #chat-history::-webkit-scrollbar { width: 6px; }
-      #chat-history::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; }
+      /* Markdown Styling */
+      .message { max-width: 85%; padding: 12px 20px; border-radius: 18px; line-height: 1.6; font-size: 14px; }
+      .message pre { background: #000; padding: 15px; border-radius: 10px; overflow-x: auto; position: relative; border: 1px solid #222; }
+      .message code { font-family: 'Courier New', monospace; color: #00ff7f; }
+      .copy-btn { position: absolute; top: 5px; right: 5px; background: #222; color: #fff; border: none; padding: 4px 8px; border-radius: 5px; cursor: pointer; font-size: 10px; }
 
-      .message {
-        max-width: 85%;
-        padding: 14px 18px;
-        border-radius: 18px;
-        line-height: 1.6;
-        font-size: 14px;
-        word-wrap: break-word;
-      }
+      .user-message { align-self: flex-end; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); }
+      .ai-message { align-self: flex-start; background: #111; border: 1px solid #222; }
 
-      .user-message {
-        align-self: flex-end;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: #fff;
-      }
-
-      .ai-message {
-        align-self: flex-start;
-        background: #111;
-        border: 1px solid #333;
-        color: #eee;
-      }
-
-      .ai-loading {
-        font-family: 'Press Start 2P', cursive;
-        font-size: 8px;
-        color: #00ff7f;
-        margin: 10px 20px;
-        display: none;
-      }
+      .ai-loading { font-family: 'Press Start 2P', cursive; font-size: 8px; color: #00ff7f; margin: 10px 25px; display: none; }
 
       .chat-input-area {
-        padding: 20px;
-        background: #0a0a0a;
-        border-top: 1px solid #1a1a1a;
-        display: flex;
-        gap: 12px;
+        padding: 15px 25px; background: #0a0a0a;
+        border-top: 1px solid #1a1a1a; display: flex; gap: 12px; align-items: center;
       }
 
       #user-input {
-        flex: 1;
-        background: #000;
-        border: 1px solid #333;
-        color: white;
-        padding: 15px;
-        border-radius: 12px;
-        outline: none;
-        font-size: 14px;
+        flex: 1; background: #000; border: 1px solid #333;
+        color: white; padding: 12px; border-radius: 12px; outline: none;
       }
 
-      .player-controls {
-        height: 70px;
-        display: flex;
-        align-items: center;
-        padding: 0 25px;
-        gap: 15px;
-      }
+      #img-preview { height: 40px; border-radius: 5px; display: none; border: 1px solid #00ff7f; }
 
-      .icon-btn {
-        background: rgba(255, 255, 255, 0.08);
-        color: white;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        width: 45px; height: 45px;
-        border-radius: 50%;
-        font-size: 18px;
-        cursor: pointer;
-        transition: 0.2s;
-        display: flex; align-items: center; justify-content: center;
-      }
-
-      .icon-btn:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.1); }
-      
-      #send-btn {
-        background: #fff;
-        color: #000;
-        border: none;
-        padding: 0 25px;
-        border-radius: 12px;
-        font-weight: bold;
-        cursor: pointer;
-      }
+      .action-btn { background: #222; color: white; border: none; width: 40px; height: 40px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+      #send-btn { background: #fff; color: #000; width: auto; padding: 0 20px; font-weight: bold; }
     </style>
   </head>
 
@@ -147,124 +83,117 @@
     <main class="player-main">
       <div class="chat-shell">
         <div id="chat-history"></div>
-        <div id="ai-status" class="ai-loading">GEMINI 2.5 THINKING...</div>
+        <div id="ai-status" class="ai-loading">TYPING</div>
         <div class="chat-input-area">
-          <input type="text" id="user-input" placeholder="Ask Gemini something (or type /clear)..." autocomplete="off">
-          <button id="send-btn">SEND</button>
+          <input type="file" id="file-input" accept="image/*" style="display:none">
+          <button class="action-btn" onclick="document.getElementById('file-input').click()" title="Attach Image">📎</button>
+          <img id="img-preview" src="">
+          <input type="text" id="user-input" placeholder="Ask anything (or type /clear)..." autocomplete="off">
+          <button id="send-btn" class="action-btn">SEND</button>
         </div>
-      </div>
-
-      <div class="player-controls">
-        <button id="clear-btn" class="icon-btn" title="Clear Chat">↻</button>
       </div>
     </main>
 
     <script>
-      // === CONFIGURATION ===
       const GEMINI_API_KEY = "AIzaSyDEGQ7l66MwgwRVwwfDAszj4f82mYgfHpo";
-      // Updated to 2.5 Flash
-      const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+      const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-      const chatHistoryContainer = document.getElementById('chat-history');
+      const historyBox = document.getElementById('chat-history');
       const userInput = document.getElementById('user-input');
-      const sendBtn = document.getElementById('send-btn');
-      const clearBtn = document.getElementById('clear-btn');
+      const fileInput = document.getElementById('file-input');
+      const imgPreview = document.getElementById('img-preview');
       const aiStatus = document.getElementById('ai-status');
 
       let sessionMessages = JSON.parse(localStorage.getItem('solace_chat_history')) || [];
+      let currentImageData = null;
 
-      function initChat() {
-        if (sessionMessages.length === 0) {
-          renderMessage("Hello. Im S0LACE AI 2.5. How can I help?", 'ai-message');
-        } else {
-          sessionMessages.forEach(msg => {
-            renderMessage(msg.text, msg.role === 'user' ? 'user-message' : 'ai-message');
-          });
-        }
-      }
+      // Handle Image selection
+      fileInput.onchange = e => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+          currentImageData = reader.result.split(',')[1];
+          imgPreview.src = reader.result;
+          imgPreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      };
 
-      function clearChat() {
-        localStorage.removeItem('solace_chat_history');
-        sessionMessages = [];
-        chatHistoryContainer.innerHTML = '';
-        renderMessage("Memory cleared. I'm ready for a new topic.", 'ai-message');
+      function renderMessage(text, role) {
+        const div = document.createElement('div');
+        div.className = `message ${role === 'user' ? 'user-message' : 'ai-message'}`;
+        div.innerHTML = marked.parse(text);
+        
+        // Add Copy Buttons to Code Blocks
+        div.querySelectorAll('pre').forEach(pre => {
+          const btn = document.createElement('button');
+          btn.className = 'copy-btn';
+          btn.innerText = 'COPY';
+          btn.onclick = () => {
+            navigator.clipboard.writeText(pre.innerText.replace('COPY', ''));
+            btn.innerText = 'COPIED!';
+            setTimeout(() => btn.innerText = 'COPY', 2000);
+          };
+          pre.appendChild(btn);
+        });
+
+        historyBox.appendChild(div);
+        historyBox.scrollTop = historyBox.scrollHeight;
+        hljs.highlightAll();
       }
 
       async function askAI() {
         const text = userInput.value.trim();
-        if (!text) return;
+        if (!text && !currentImageData) return;
 
-        // Check for /clear command
         if (text.toLowerCase() === '/clear') {
-          userInput.value = '';
-          clearChat();
-          return;
+          localStorage.removeItem('solace_chat_history');
+          sessionMessages = []; historyBox.innerHTML = '';
+          userInput.value = ''; return;
         }
 
-        addMessage(text, 'user-message', true);
+        renderMessage(text || "[Sent an Image]", 'user');
         userInput.value = '';
         aiStatus.style.display = 'block';
 
-        const contents = sessionMessages.map(m => ({
-          role: m.role === 'user' ? 'user' : 'model',
-          parts: [{ text: m.text }]
-        }));
+        const userPart = { text: text || "What is in this image?" };
+        const parts = [userPart];
+        if (currentImageData) {
+          parts.push({ inline_data: { mime_type: "image/jpeg", data: currentImageData } });
+        }
+
+        // Add to history
+        sessionMessages.push({ role: 'user', parts: [{ text: text || "[Image]" }] });
 
         try {
           const response = await fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents })
+            body: JSON.stringify({ contents: sessionMessages.map(m => ({ role: m.role === 'user' ? 'user' : 'model', parts: m.parts })) })
           });
 
           const data = await response.json();
-          if (data.error) throw new Error(data.error.message);
-
           const aiText = data.candidates[0].content.parts[0].text;
-          addMessage(aiText, 'ai-message', true);
-        } catch (error) {
-          console.error(error);
-          renderMessage("ERROR: " + error.message, 'ai-message');
+          
+          renderMessage(aiText, 'ai');
+          sessionMessages.push({ role: 'model', parts: [{ text: aiText }] });
+          localStorage.setItem('solace_chat_history', JSON.stringify(sessionMessages));
+        } catch (e) {
+          renderMessage("## Error\nCheck API Key or Connection.", 'ai');
         } finally {
           aiStatus.style.display = 'none';
+          currentImageData = null;
+          imgPreview.style.display = 'none';
+          fileInput.value = '';
         }
       }
 
-      function addMessage(text, className, save) {
-        renderMessage(text, className);
-        if (save) {
-          sessionMessages.push({ text, role: className === 'user-message' ? 'user' : 'model' });
-          localStorage.setItem('solace_chat_history', JSON.stringify(sessionMessages));
-        }
-      }
-
-      function renderMessage(text, className) {
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `message ${className}`;
-        msgDiv.textContent = text;
-        chatHistoryContainer.appendChild(msgDiv);
-        chatHistoryContainer.scrollTop = chatHistoryContainer.scrollHeight;
-      }
-
-      sendBtn.addEventListener('click', askAI);
-      userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') askAI(); });
-      clearBtn.addEventListener('click', clearChat);
-
-      // Sidebar Logic
-      function getAccent() { return localStorage.getItem("s0laceAccent") || "gray"; }
-      function updateSideIcons() {
-        const accent = getAccent();
-        document.querySelectorAll(".side-icon").forEach(link => {
-          const icon = link.dataset.icon;
-          const img = link.querySelector("img");
-          const isActive = location.pathname.endsWith(link.getAttribute("href"));
-          link.classList.toggle("active", isActive);
-          img.src = `thumbs/${icon}/${isActive ? accent : "gray"}.png`;
-        });
-      }
-
-      initChat();
-      updateSideIcons();
+      document.getElementById('send-btn').onclick = askAI;
+      userInput.onkeypress = e => e.key === 'Enter' && askAI();
+      
+      // Init
+      if (sessionMessages.length) sessionMessages.forEach(m => renderMessage(m.parts[0].text, m.role));
+      else renderMessage("# S0LACE AI\nSend text or images to begin. Type `/clear` to reset.", 'ai');
     </script>
   </body>
 </html>
