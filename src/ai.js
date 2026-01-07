@@ -13,6 +13,6 @@ export async function aiRoute(request, reply) {
     const data = await response.json();
     reply.send(data);
   } catch (err) {
-    reply.code(500).send({ error: err.message });
+    reply.code(500).send({ error: "AI request failed" });
   }
 }
