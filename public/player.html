@@ -26,7 +26,7 @@
         height: 100vh; width: 100%;
       }
 
-      /* TOP SECTION: Side-by-side Ad and Game */
+      /* TOP SECTION */
       .content-split {
         display: flex;
         flex: 1; 
@@ -35,20 +35,21 @@
         overflow: hidden;
       }
 
-      /* LEFT SQUARE AD (MATCHES SKETCH) */
+      /* LEFT SQUARE AD - 30% WIDTH */
       .ad-sidebar {
-        flex: 1;
+        flex: 0 0 30%; /* Fixed at 30% */
         background: #050505;
         border: 2px solid #1a1a1a;
         border-radius: 18px;
         display: flex;
         align-items: center;
         justify-content: center;
+        overflow: hidden;
       }
 
-      /* RIGHT GAME PLAYER (MATCHES SKETCH) */
+      /* RIGHT GAME PLAYER - 70% WIDTH */
       .player-frame-wrap {
-        flex: 1;
+        flex: 0 0 70%; /* Fixed at 70% */
         border-radius: 18px; 
         overflow: hidden;
         background: #000;
@@ -60,7 +61,7 @@
         width: 100%; height: 100%; border: none; display: block;
       }
 
-      /* BUTTON BAR (CENTERED CIRCLES LIKE SKETCH) */
+      /* BUTTON BAR */
       .player-actions {
         height: 80px;
         display: flex; align-items: center; justify-content: center;
@@ -78,7 +79,7 @@
       }
       .player-actions button:hover { background: rgba(255, 255, 255, 0.15); transform: scale(1.1); }
 
-      /* BOTTOM HORIZONTAL AD (MATCHES SKETCH) */
+      /* BOTTOM HORIZONTAL AD */
       .ad-footer {
         width: 100%;
         height: 120px;
@@ -92,11 +93,11 @@
 
       .no-src { color: white; text-align: center; margin: auto; }
 
-      /* Mobile: Stack them vertically so it's usable */
-      @media (max-width: 800px) {
+      /* Mobile adjustment */
+      @media (max-width: 900px) {
         .content-split { flex-direction: column-reverse; overflow-y: auto; }
-        .ad-sidebar { min-height: 300px; flex: none; }
-        .player-frame-wrap { min-height: 400px; flex: none; }
+        .ad-sidebar { min-height: 250px; flex: none; width: 100%; }
+        .player-frame-wrap { min-height: 400px; flex: none; width: 100%; }
       }
     </style>
   </head>
