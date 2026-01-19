@@ -3,16 +3,28 @@ importScripts('/scram/scramjet.all.js');
 const { ScramjetServiceWorker } = $scramjetLoadWorker();
 const scramjet = new ScramjetServiceWorker();
 
-self.addEventListener("fetch", event => {
-  const req = event.request;
-  const url = new URL(req.url);
+// Must clear old DB so you don’t hit NotFoundError
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    indexedDB.deleteDatabase("scramjet")
+  );
+});
 
-  // Only handle http(s)
-  if (url.protocol !== "http:" && url.protocol !== "https:") {
+self.addEventListener("fetch", (event) => {
+  const req = event.request;
+  let url;
+
+  try {
+    url = new URL(req.url);
+  } catch(e) {
+    // If URL is truly invalid, fallback
     return;
   }
 
-  // Hard bypass ads
+  // Bypass non-http(s)
+  if (url.protocol !== "http:" && url.protocol !== "https:") return;
+
+  // Bypass ads/tracking and other 3rd party hosts you don’t want proxying
   if (
     url.hostname.includes("googlesyndication.com") ||
     url.hostname.includes("doubleclick.net") ||
@@ -22,7 +34,7 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  // TMDB images bypass
+  // TMDB images, etc: bypass
   if (url.hostname === "image.tmdb.org") {
     event.respondWith(fetch(req));
     return;
