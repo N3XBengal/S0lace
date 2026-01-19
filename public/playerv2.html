@@ -240,5 +240,25 @@
       }
       updateSideIcons();
     </script>
+<script>
+  const params = new URLSearchParams(location.search);
+  const src = params.get("src");
+
+  const iframe = document.getElementById("frame");
+
+  if (!src) {
+    console.error("No src provided");
+  } else if (src.startsWith("/scramjet/")) {
+    // ✅ already proxied — DO NOT TOUCH
+    iframe.src = src;
+  } else if (src.startsWith("http://") || src.startsWith("https://")) {
+    // ✅ raw URL — wrap it once
+    iframe.src = "/scramjet/" + src;
+  } else {
+    // fallback
+    iframe.src = src;
+  }
+</script>
+
   </body>
 </html>
