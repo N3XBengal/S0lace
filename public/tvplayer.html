@@ -358,7 +358,7 @@
         // open in new tab (
         if (openNewTabBtn) {
           openNewTabBtn.addEventListener("click", () => {
-            const direct = `https://cinemaos.tech/player/${tmdbId}/${currentSeason}/${currentEpisode}`;
+            const direct = `https://player.autoembed.cc/embed/tv/${tmdbId}/${currentSeason}/${currentEpisode}`;
             window.open(direct, "_blank");
           });
         }
