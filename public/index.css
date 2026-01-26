@@ -115,6 +115,36 @@
 }
 
 
+#global-announcement {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  max-width: 320px;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: white;
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  z-index: 999998;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+  cursor: pointer;
+}
+
+#global-announcement span.read-more {
+  color: #6cf;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-left: 6px;
+}
+
+#global-announcement span.read-more:hover {
+  opacity: 0.85;
+}
+
+
 .media-item {
   background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(18px);
