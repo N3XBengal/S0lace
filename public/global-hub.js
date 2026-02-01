@@ -167,8 +167,7 @@ applyCustomCursor();
   announcement.id = "global-announcement";
 
   announcement.innerHTML = `
-    s0lace.fly.dev link will be shut down on Feb 1st. https://s0lace-qug8.onrender.com will be the new main link.
-    <span class="read-more">Read more</span>
+    FALSE ALARM GUYS S0LACE.FLY.DEV IS HERE TO STAY
   `;
 
   // Click on announcement body → close
