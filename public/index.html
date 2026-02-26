@@ -1,6 +1,21 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <script>
+  /* --- THE VIP GATEKEEPER --- */
+  // Add your friends' unique passwords inside the brackets below.
+  // Example: "password123", "cool_friend_88", "secret_key"
+  const validPasswords = ["Jubah6741", "Saxyphone123", "secret789"];
+
+  const userPass = prompt("Access Restricted. Enter your unique student ID/Code:");
+
+  if (!validPasswords.includes(userPass)) {
+    alert("Invalid Access Code. Redirecting to Google...");
+    window.location.href = "https://www.google.com";
+  } else {
+    alert("Access Granted. Enjoy!");
+  }
+</script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>S0LACE</title>
