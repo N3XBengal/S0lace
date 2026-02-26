@@ -106,3 +106,22 @@ if (
 } else {
   // Not on the proxy page or libs not loaded – do nothing.
 }
+<script>
+  // This is your list of "Allowed" passwords. 
+  // You can change these or add as many as you want!
+  const validPasswords = ["pizza123", "taco456", "secret789", "admin_only"];
+
+  let access = false;
+  
+  // This pops up a box as soon as the page loads
+  const userPass = prompt("Enter your unique access code:");
+
+  if (validPasswords.includes(userPass)) {
+    access = true;
+    alert("Access Granted. Welcome!");
+  } else {
+    alert("Wrong code. Access Denied.");
+    // This sends them to Google if they get it wrong
+    window.location.href = "https://www.google.com"; 
+  }
+</script>
